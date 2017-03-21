@@ -1,5 +1,5 @@
-/vendor
 /node_modules
+/vendor
 Homestead.yaml
 Homestead.json
 .phpintel/
