@@ -18,32 +18,34 @@ class HomeController extends Controller
 	            echo $challenge;
         }
 
-        $input = json_decode(file_get_contents('php://input'), true);
+        /* receive and send messages */
+		$input = json_decode(file_get_contents('php://input'), true);
+		if (isset($input['entry'][0]['messaging'][0]['sender']['id'])) {
 
-		// Get the Senders Graph ID
-		$sender = $input['entry'][0]['messaging'][0]['sender']['id'];
+		    $sender = $input['entry'][0]['messaging'][0]['sender']['id']; //sender facebook id
+		    $message = $input['entry'][0]['messaging'][0]['message']['text']; //text that user sent
 
-		// Get the returned message
-		$message = $input['entry'][0]['messaging'][0]['message']['text'];
+		    $url = 'https://graph.facebook.com/v2.6/me/messages?access_token='env('PAGE_TOKEN');
 
-		//API Url and Access Token, generate this token value on your Facebook App Page
-		$url = 'https://graph.facebook.com/v2.6/me/messages?access_token='.env('PAGE_TOKEN');
-
-		//Initiate cURL.
-		$ch = curl_init($url);
-
-		//The JSON data.
-		$jsonData = '{
+		    /*initialize curl*/
+		    $ch = curl_init($url);
+		    /*prepare response*/
+		    $jsonData = '{
 		    "recipient":{
 		        "id":"' . $sender . '"
-		    }, 
-		    "message":{
-		        "text":"The message you want to return"
+		        },
+		        "message":{
+		            "text":"You said, ' . $message . '"
+		        }
+		    }';
+		    /* curl setting to send a json post data */
+		    curl_setopt($ch, CURLOPT_POST, 1);
+		    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+		    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		    if (!empty($message)) {
+		        $result = curl_exec($ch); // user will get the message
 		    }
-		}';
-
-		//Tell cURL that we want to send a POST request.
-		curl_setopt($ch, CURLOPT_POST, 1);
+		}
          
     }
 }
