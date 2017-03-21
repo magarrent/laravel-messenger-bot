@@ -13,10 +13,10 @@ class HomeController extends Controller
         if(isset($_REQUEST['hub_challenge'])) {
             $challenge = $_REQUEST['hub_challenge'];
             $hub_verify_token = $_REQUEST['hub_verify_token'];
+
+	        if ($hub_verify_token === env('FACEBOOK_TOKEN'))
+	            echo $challenge;
         }
          
-         
-        if ($hub_verify_token === env('FACEBOOK_TOKEN'))
-            echo $challenge;
     }
 }
