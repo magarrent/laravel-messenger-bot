@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
-    public function getWebhook() {
+    public function anyWebhook() {
         if(isset($_REQUEST['hub_challenge'])) {
             $challenge = $_REQUEST['hub_challenge'];
             $hub_verify_token = $_REQUEST['hub_verify_token'];
